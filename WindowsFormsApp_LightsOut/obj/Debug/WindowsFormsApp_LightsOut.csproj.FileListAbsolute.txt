@@ -1,0 +1,10 @@
+D:\Programming\C#\WindowsFormsApp_LightsOut\bin\Debug\WindowsFormsApp_LightsOut.exe.config
+D:\Programming\C#\WindowsFormsApp_LightsOut\bin\Debug\WindowsFormsApp_LightsOut.exe
+D:\Programming\C#\WindowsFormsApp_LightsOut\bin\Debug\WindowsFormsApp_LightsOut.pdb
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.Properties.Resources.resources
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.csproj.GenerateResource.cache
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.csproj.CoreCompileInputs.cache
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.exe
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.pdb
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.csproj.AssemblyReference.cache
+D:\Programming\C#\WindowsFormsApp_LightsOut\obj\Debug\WindowsFormsApp_LightsOut.LightsOut.resources
