@@ -1,4 +1,4 @@
-﻿
+
 namespace WindowsFormsApp_LightsOut
 {
     partial class LightsOut
@@ -48,4 +48,3 @@ namespace WindowsFormsApp_LightsOut
         #endregion
     }
 }
-
