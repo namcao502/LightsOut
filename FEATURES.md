@@ -1,137 +1,250 @@
 # Features
 
-Complete list of features in the Lights Out application.
+Complete list of features in the Blackout application.
 
 ---
 
 ## Gameplay
 
-### 1. Configurable N x N Light Grid
+### 1. Configurable N x M Light Grid
 
-The board is an N x N grid of clickable buttons (default 4x4, range 2–10). Each button represents a light that can be either ON (blue) or OFF (red).
+The board supports both square (N x N) and rectangular (N x M) grids (range 2-10 per dimension). Default is 4x4.
 
-- The player can choose the grid size at any time via **Game > New Game** (`Ctrl+N`), which opens a dialog with a numeric spinner.
-- Button size scales automatically so the board fits comfortably on screen (100px per cell at small sizes, down to 40px at larger sizes).
+- The player can choose grid dimensions via **Game > Difficulty > Custom** (`Ctrl+N`), which opens a dialog with separate Rows/Cols spinners and a "Square" checkbox.
+- Button size scales automatically so the board fits within 600px.
+- **Tested by:** `RectangularGrid_DifferentRowsCols`, `RectangularGrid_HasWon`
 
-### 2. Cross-Pattern Toggle
+### 2. Cross-Pattern Toggle (default)
 
-Clicking a cell toggles **five** lights at once: the clicked cell and its four orthogonal neighbors (up, down, left, right). Cells on edges or corners correctly skip out-of-bounds neighbors.
+Clicking a cell toggles the clicked cell and its four orthogonal neighbors (up, down, left, right). Cells on edges or corners correctly skip out-of-bounds neighbors.
 
 - **Tested by:** `ToggleCell_Center_TogglesItselfAndNeighbors`, `ToggleCell_Corner_OnlyTogglesValidNeighbors`
 
-### 3. Toggle Idempotency
+### 3. Multiple Toggle Patterns
 
-Clicking the same cell twice restores the board to its previous state. This is a core property of the Lights Out puzzle that ensures every move is reversible.
+Four toggle patterns are available via the **Pattern** menu:
+
+| Pattern | Behavior |
+|---------|----------|
+| Cross (+) | Self + 4 orthogonal neighbors (classic) |
+| Diagonal (X) | Self + 4 diagonal neighbors |
+| All 8 (*) | Self + all 8 surrounding neighbors |
+| Plus-3 (++) | Self + 2 cells in each cardinal direction |
+
+Changing pattern starts a new game. The current pattern is shown in the status bar.
+
+- **Tested by:** `ToggleCell_DiagonalPattern_TogglesDiagonals`, `ToggleCell_XShapePattern_TogglesAll8Neighbors`
+
+### 4. Toggle Idempotency
+
+Clicking the same cell twice restores the board to its previous state, ensuring every move is reversible.
 
 - **Tested by:** `ToggleCell_Twice_RestoresOriginalState`
 
-### 4. Win Detection
+### 5. Win Detection
 
-The game checks the board after every click. The player wins when all lights are OFF (all buttons are red).
+The game checks the board after every click. The player wins when all lights are OFF.
 
 - **Tested by:** `NewGame_AllLightsOff_HasWonReturnsTrue`, `SetAll_Off_HasWonReturnsTrue`
 
-### 5. Win Dialog with Replay Option
+### 6. Win Dialog with Stats
 
-When the player wins, a dialog appears with the message "You win! Play again?" and Yes/No buttons:
+When the player wins, a dialog shows:
+- Total moves and elapsed time
+- Optimal solution move count
+- Whether a new high score was set
+- Option to play again or exit
 
-- **Yes** opens the grid-size dialog so the player can pick a new size (or keep the same).
-- **No** closes the application.
+### 7. Random Solvable Puzzles
 
-### 6. Random Solvable Puzzles
-
-Each new game generates a random puzzle that is **guaranteed to be solvable**. The algorithm works by starting from the solved state (all lights off) and applying a random number of clicks (5-15), which can always be reversed by the player.
+Each new game generates a puzzle guaranteed to be solvable. The algorithm starts from the solved state (all off) and applies random clicks.
 
 - **Tested by:** `Randomize_ProducesNonSolvedBoard`, `Randomize_IsSolvable_ByReversingClicks`
 
-### 7. Bulk Light Control
+### 8. Difficulty Presets
 
-The `SetAll` method sets every light to ON or OFF at once. Used internally by the randomization algorithm.
+The **Game > Difficulty** submenu provides quick starts:
+- Easy (3x3)
+- Medium (5x5)
+- Hard (7x7)
+- Custom (opens the grid-size dialog)
 
-- **Tested by:** `SetAll_On_NoLightIsOff`, `SetAll_Off_HasWonReturnsTrue`
+### 9. Difficulty-Rated Puzzle Generator
+
+The solver generates puzzles targeting a specific optimal move count, ensuring difficulty matches the preset chosen.
+
+- **Tested by:** `GenerateWithDifficulty_ProducesValidPuzzle`
+
+### 10. Move Counter
+
+The status bar shows the number of moves (clicks) made. Resets on new game.
+
+- **Tested by:** `MoveCount_IncrementedOnToggle`, `MoveCount_ResetOnRandomize`
+
+### 11. Timer
+
+The status bar shows elapsed time (M:SS). Timer starts on the first click and stops on win. Resets on new game.
+
+### 12. Undo
+
+**Game > Undo** (`Ctrl+Z`) reverts the last move. Multiple undo is supported (full move history). Toggle is self-inverse, so undo simply replays the same cell.
+
+- **Tested by:** `Undo_RevertsLastMove`, `Undo_DecrementsCount`, `CanUndo_FalseOnNewGame`, `CanUndo_TrueAfterToggle`, `Undo_EmptyHistory_ThrowsException`
+
+### 13. Keyboard Navigation
+
+Arrow keys navigate a yellow-highlighted selection cursor across the grid. Enter/Space toggles the selected cell. Escape deselects. Selection wraps around edges.
+
+### 14. Hint System
+
+**Game > Hint** (`Ctrl+H`) highlights the next optimal cell to click with a flashing yellow background (4 flashes over ~2 seconds). Based on the GF(2) solver.
+
+- **Tested by:** `GetHint_ReturnsFirstMove`, `GetHint_SolvedBoard_ReturnsNull`
+
+### 15. Step-by-Step Solver
+
+**Game > Show Solution** displays numbered overlays on all cells that need clicking, in order. Shows total move count. Uses Gaussian elimination over GF(2).
+
+- **Tested by:** `Solve_SimpleGrid_ReturnsValidSolution`, `Solve_AlreadySolved_ReturnsEmpty`, `GetStepByStep_SolvesWhenApplied`
 
 ---
 
 ## UI / UX
 
-### 8. Color-Coded Light States
+### 16. Color Themes
 
-| State | Color |
-|-------|-------|
-| ON    | Blue  |
-| OFF   | Red   |
+Four themes available via the **Theme** menu:
 
-Colors are defined as named constants (`LightOnColor`, `LightOffColor`) for easy customization.
+| Theme | Light ON | Light OFF | Background |
+|-------|----------|-----------|------------|
+| Classic | Blue | Red | Default |
+| Dark | DarkCyan | DimGray | Near-black |
+| Neon | Lime | Magenta | Black |
+| Pastel | CornflowerBlue | LightCoral | WhiteSmoke |
 
-### 9. Auto-Sized Window
+### 17. Smooth Animation
 
-The form's `ClientSize` is calculated from the grid dimensions (`gridSize * buttonSize`), so the window always fits the board exactly with no wasted space. The window resizes automatically when the grid size changes.
+When toggling cells, colors transition smoothly over ~300ms (6 animation frames at 50ms). Can be disabled via **Settings > Enable Animation**.
 
-### 9a. Adaptive Button Scaling
+### 18. Auto-Sized Window
 
-Buttons are 100px at small grid sizes and scale down proportionally (minimum 40px) for larger grids, keeping the board within 600px.
+The form's `ClientSize` is calculated from grid dimensions, menu, status bar, and optional tutorial overlay. The window always fits the board with no wasted space.
 
-### 10. Centered Window
+### 19. Centered Window
 
-The form opens at the center of the screen (`StartPosition = CenterScreen`).
+The form opens at the center of the screen.
 
-### 11. Flat Button Style
+### 20. Flat Button Style
 
-Buttons use `FlatStyle.Flat` for a clean, modern look without 3D borders.
+Buttons use `FlatStyle.Flat` for a clean, modern look.
 
-### 12. Game Menu
+### 21. Dynamic Title Bar
 
-A **Game** menu in the menu bar provides:
+The title bar shows the current grid size (e.g. "Blackout (4x4)") and "(Editor)" when in editor mode.
 
-- **New Game** (`Ctrl+N`) — opens the grid-size dialog and starts a fresh puzzle.
-- **Exit** (`Alt+F4`) — closes the application.
+### 22. Status Bar
 
-### 13. Dynamic Title Bar
+A `StatusStrip` at the bottom shows: Moves count, Timer, Current pattern, and Optimal solution moves.
 
-The title bar displays the current grid size (e.g. "Lights Out (4x4)"), updating whenever a new game starts.
-
-### 14. Custom Window Icon
+### 23. Custom Window Icon
 
 The application uses a custom icon embedded in the form's `.resx` resource file.
 
 ---
 
+## Save / Load / Persistence
+
+### 24. Save Game
+
+**Game > Save** (`Ctrl+S`) saves the current game state (board, pattern, moves, timer) to a `.bosave` file using JSON serialization.
+
+### 25. Load Game
+
+**Game > Load** (`Ctrl+O`) restores a saved game from a `.bosave` file (also supports legacy `.losave` files), rebuilding the grid and resuming where you left off.
+
+### 26. Puzzle Editor
+
+**Game > Puzzle Editor** toggles editor mode:
+- Click toggles individual lights (no neighbor toggling)
+- Timer and move counter are paused
+- **Play from Editor** starts a game from the current board layout
+
+- **Tested by:** `SetLight_SetsIndividualCell`
+
+### 27. Board Serialization
+
+`GetBoardSnapshot()` and `LoadBoard()` support copying and restoring board state.
+
+- **Tested by:** `GetBoardSnapshot_ReturnsCorrectCopy`, `LoadBoard_RestoresState`
+
+---
+
+## High Scores and Achievements
+
+### 28. High Score Tracking
+
+Best (fewest moves, fastest time) per grid size is saved to `%AppData%/Blackout/highscores.json`. Viewable via **Game > High Scores**.
+
+### 29. Achievement System
+
+Seven achievements tracked across sessions:
+
+| Achievement | Description |
+|-------------|-------------|
+| First Win | Solve any puzzle |
+| Speed Demon | Solve in under 10 seconds |
+| Minimalist | Solve in minimum possible moves |
+| No Undo | Solve without using undo |
+| Size Master | Solve on every grid size 2 through 10 |
+| Pattern Explorer | Solve with each toggle pattern |
+| Perfectionist | Solve 5 different puzzles with minimum moves |
+
+Viewable via **Help > Achievements**. A gold toast notification appears when an achievement unlocks.
+
+---
+
+## Tutorial
+
+### 30. Interactive Tutorial
+
+**Help > Tutorial** runs a guided walkthrough on a 3x3 grid:
+1. "Click the highlighted cell to toggle it"
+2. "Notice the neighbors toggled too"
+3. "Goal: turn ALL lights off"
+4. "Use Ctrl+Z to undo mistakes"
+5. Completion message
+
+Each step highlights the target cell and advances when clicked.
+
+---
+
 ## Architecture
 
-### 15. Separated Game Logic (Model / View Split)
+### 31. Model / View Separation
 
-Game rules live in `LightsOutGame` (the model) and are completely independent of WinForms. The form (`LightsOut`) only handles UI concerns: building buttons, reading model state to set colors, and forwarding clicks to the model.
+Game rules live in `BlackoutGame` (model) with no WinForms dependency. The solver, patterns, persistence, and achievements are all in separate model classes. The form only handles UI.
 
-### 16. Input Validation
+### 32. Input Validation
 
-The `LightsOutGame` constructor rejects invalid grid sizes (zero or negative) with a descriptive `ArgumentOutOfRangeException`.
+The model validates all inputs: grid size, cell coordinates (`IsLightOn`, `SetLight`), `Randomize` parameters, and board dimensions on `LoadBoard`.
 
-- **Tested by:** `Constructor_ZeroGridSize_ThrowsException`, `Constructor_NegativeGridSize_ThrowsException`
+- **Tested by:** `IsLightOn_OutOfBounds_ThrowsException`, `Randomize_NullRandom_ThrowsException`, `Randomize_InvalidMinMax_ThrowsException`, `Constructor_ZeroGridSize_ThrowsException`, `Constructor_NegativeGridSize_ThrowsException`
 
-### 17. GridSize Property
+### 33. GF(2) Solver
 
-The game exposes its grid size as a read-only property, allowing the UI and tests to query it without hard-coding values.
+`BlackoutSolver` uses Gaussian elimination over the Galois field GF(2) to find optimal solutions. Supports all toggle patterns and rectangular grids.
 
-- **Tested by:** `GridSize_ReturnsCorrectValue`
+- **Tested by:** `Solve_SimpleGrid_ReturnsValidSolution`, `Solve_WithDiagonalPattern_Works`
 
 ---
 
 ## Testing
 
-### 18. Unit Test Suite (11 tests)
+### 34. Unit Test Suite (~37 tests)
 
-The `LightsOutGame.Tests` project covers all core game logic with MSTest:
+Two test files cover all model-layer logic:
 
-| # | Test | What it verifies |
-|---|------|------------------|
-| 1 | `NewGame_AllLightsOff_HasWonReturnsTrue` | Default board is all-off (solved) |
-| 2 | `SetAll_On_NoLightIsOff` | `SetAll(true)` turns every light on |
-| 3 | `SetAll_Off_HasWonReturnsTrue` | `SetAll(false)` returns to solved state |
-| 4 | `ToggleCell_Center_TogglesItselfAndNeighbors` | Center click toggles 5 cells |
-| 5 | `ToggleCell_Corner_OnlyTogglesValidNeighbors` | Corner click toggles 3 cells safely |
-| 6 | `ToggleCell_Twice_RestoresOriginalState` | Double-click is a no-op |
-| 7 | `Randomize_ProducesNonSolvedBoard` | New puzzle is not already solved |
-| 8 | `Randomize_IsSolvable_ByReversingClicks` | Same seed produces same board |
-| 9 | `Constructor_ZeroGridSize_ThrowsException` | Rejects grid size 0 |
-| 10 | `Constructor_NegativeGridSize_ThrowsException` | Rejects negative grid size |
-| 11 | `GridSize_ReturnsCorrectValue` | Property returns correct value |
+| Category | Test count | File |
+|----------|-----------|------|
+| Core game logic | ~30 | `BlackoutGameTests.cs` |
+| Solver | ~7 | `BlackoutSolverTests.cs` |

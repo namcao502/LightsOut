@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7C36C7F0-2FEC-4E9E-AC3F-9A1D1741002A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>WindowsFormsApp_LightsOut</RootNamespace>
-    <AssemblyName>WindowsFormsApp_LightsOut</AssemblyName>
+    <RootNamespace>Blackout</RootNamespace>
+    <AssemblyName>Blackout</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,30 +33,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LightsOut.cs">
+    <!-- Form -->
+    <Compile Include="BlackoutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LightsOut.Designer.cs">
-      <DependentUpon>LightsOut.cs</DependentUpon>
+    <Compile Include="BlackoutForm.Designer.cs">
+      <DependentUpon>BlackoutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LightsOutGame.cs" />
+    <!-- Model (alphabetical) -->
+    <Compile Include="AchievementManager.cs" />
+    <Compile Include="BlackoutGame.cs" />
+    <Compile Include="BlackoutSolver.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="HighScoreManager.cs" />
+    <Compile Include="TogglePattern.cs" />
+    <!-- Entry point -->
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="LightsOut.resx">
-      <DependentUpon>LightsOut.cs</DependentUpon>
+    <EmbeddedResource Include="BlackoutForm.resx">
+      <DependentUpon>BlackoutForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

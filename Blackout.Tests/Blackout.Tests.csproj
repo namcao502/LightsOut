@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WindowsFormsApp_LightsOut\WindowsFormsApp_LightsOut.csproj" />
+    <ProjectReference Include="..\Blackout\Blackout.csproj" />
   </ItemGroup>
 
 </Project>

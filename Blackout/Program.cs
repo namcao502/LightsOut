@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp_LightsOut
+namespace Blackout
 {
     static class Program
     {
@@ -16,7 +13,7 @@ namespace WindowsFormsApp_LightsOut
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LightsOut());
+            Application.Run(new BlackoutForm());
         }
     }
 }
